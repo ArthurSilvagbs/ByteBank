@@ -10,18 +10,18 @@ public class Movimentacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "conta_origem_id", nullable = false)
-    Conta contaOrigem;
+    private Conta contaOrigem;
 
     @ManyToOne
     @JoinColumn(name = "conta_destino_id", nullable = false)
-    Conta contaDestino;
+    private Conta contaDestino;
 
-    @Column(scale = 11, precision = 2, nullable = false)
-    BigDecimal valor;
+    @Column(scale = 2, precision = 11, nullable = false)
+    private BigDecimal valor;
 
     public Movimentacao() {
     }

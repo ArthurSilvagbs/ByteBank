@@ -10,18 +10,18 @@ public class Conta {
 
     @Id
     @Column(length = 5, nullable = false, unique = true)
-    Integer numeroConta;
+    private Integer numeroConta;
 
     @Column(nullable = false, precision = 11, scale = 2)
-    BigDecimal saldo;
+    private BigDecimal saldo;
 
     @ManyToOne
     @JoinColumn(name = "cliente_cpf", nullable = false)
-    Cliente cliente;
+    private Cliente cliente;
 
     @OneToMany
-    @JoinColumn(name = "movimentação_id")
-    List<Movimentacao> movimentacoes;
+    @JoinColumn(name = "movimentacao_id")
+    private List<Movimentacao> movimentacoes;
 
     public Conta() {
     }

@@ -10,14 +10,14 @@ public class Cliente {
 
     @Id
     @Column(length = 11, nullable = false, unique = true)
-    String cpf;
+    private String cpf;
 
     @Column(length = 255, nullable = false)
-    String nome;
+    private String nome;
 
     @OneToMany
     @JoinColumn(name = "conta_id")
-    List<Conta> contas;
+    private List<Conta> contas;
 
     public Cliente() {
     }
