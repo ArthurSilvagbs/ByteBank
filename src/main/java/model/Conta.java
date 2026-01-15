@@ -9,8 +9,9 @@ import java.util.List;
 public class Conta {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 5, nullable = false, unique = true)
-    private Integer numeroConta;
+    private Long numeroConta;
 
     @Column(nullable = false, precision = 11, scale = 2)
     private BigDecimal saldo;
@@ -26,17 +27,17 @@ public class Conta {
     public Conta() {
     }
 
-    public Conta(Integer numeroConta, BigDecimal saldo, Cliente cliente) {
+    public Conta(Long numeroConta, BigDecimal saldo, Cliente cliente) {
         this.numeroConta = numeroConta;
         this.saldo = saldo;
         this.cliente = cliente;
     }
 
-    public Integer getNumeroConta() {
+    public Long getNumeroConta() {
         return numeroConta;
     }
 
-    public void setNumeroConta(Integer numeroConta) {
+    public void setNumeroConta(Long numeroConta) {
         this.numeroConta = numeroConta;
     }
 
