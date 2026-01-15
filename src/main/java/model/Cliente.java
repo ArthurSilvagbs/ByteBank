@@ -15,8 +15,7 @@ public class Cliente {
     @Column(length = 255, nullable = false)
     private String nome;
 
-    @OneToMany(mappedBy = "cliente")
-    //@JoinColumn(name = "conta_id")
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Conta> contas;
 
     public Cliente() {

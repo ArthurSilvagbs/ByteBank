@@ -20,9 +20,11 @@ public class Conta {
     @JoinColumn(name = "cliente_cpf", nullable = false)
     private Cliente cliente;
 
-    @OneToMany
-    @JoinColumn(name = "movimentacao_id")
-    private List<Movimentacao> movimentacoes;
+    @OneToMany(mappedBy = "contaOrigem", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    private List<Movimentacao> entradas;
+
+    @OneToMany(mappedBy = "contaDestino", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    private List<Movimentacao> saidas;
 
     public Conta() {
     }
@@ -57,11 +59,19 @@ public class Conta {
         this.cliente = cliente;
     }
 
-    public List<Movimentacao> getMovimentacoes() {
-        return movimentacoes;
+    public List<Movimentacao> getEntradas() {
+        return entradas;
     }
 
-    public void setMovimentacoes(List<Movimentacao> movimentacoes) {
-        this.movimentacoes = movimentacoes;
+    public void setEntradas(List<Movimentacao> entradas) {
+        this.entradas = entradas;
+    }
+
+    public List<Movimentacao> getSaidas() {
+        return saidas;
+    }
+
+    public void setSaidas(List<Movimentacao> saidas) {
+        this.saidas = saidas;
     }
 }
