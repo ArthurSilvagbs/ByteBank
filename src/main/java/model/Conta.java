@@ -29,9 +29,7 @@ public class Conta {
     public Conta() {
     }
 
-    public Conta(Long numeroConta, BigDecimal saldo, Cliente cliente) {
-        this.numeroConta = numeroConta;
-        this.saldo = saldo;
+    public Conta(Cliente cliente) {
         this.cliente = cliente;
     }
 

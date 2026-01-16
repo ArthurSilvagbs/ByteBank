@@ -49,4 +49,9 @@ public class Cliente {
     public void setContas(List<Conta> contas) {
         this.contas = contas;
     }
+
+    public void adicionarConta(Conta conta) {
+        this.contas.add(conta);
+        conta.setCliente(this);
+    }
 }
