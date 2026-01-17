@@ -8,6 +8,7 @@ import model.Conta;
 import util.JPAUtil;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class ContaController {
 
@@ -76,6 +77,32 @@ public class ContaController {
                 em.getTransaction().rollback();
             }
             throw new RuntimeException(e);
+        } finally {
+            dao.fechar();
+        }
+
+    }
+
+    public Conta buscarContaPorNumero(Long numeroConta) {
+
+        EntityManager em = JPAUtil.getEntityManager();
+        ContaDAOJPA dao = new ContaDAOJPA(em);
+
+        try {
+            return dao.buscarPorNumero(numeroConta);
+        } finally {
+            dao.fechar();
+        }
+
+    }
+
+    public List<Conta> obterTodasContas() {
+
+        EntityManager em = JPAUtil.getEntityManager();
+        ContaDAOJPA dao = new ContaDAOJPA(em);
+
+        try {
+            return dao.obterTodos();
         } finally {
             dao.fechar();
         }

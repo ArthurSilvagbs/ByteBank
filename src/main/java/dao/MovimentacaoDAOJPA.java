@@ -19,23 +19,13 @@ public class MovimentacaoDAOJPA implements MovimentacaoDAO{
     }
 
     @Override
-    public void excluir(Movimentacao movimentacao) {
-        this.em.persist(movimentacao);
-    }
-
-    @Override
-    public void atualizar(Movimentacao movimentacao) {
-        this.em.persist(movimentacao);
-    }
-
-    @Override
     public Movimentacao buscarPorId(Long id) {
         return em.find(Movimentacao.class, id);
     }
 
     @Override
     public List<Movimentacao> obterTodos() {
-        String jpql = "SELECT m FROM Movimentacao m";
+        String jpql = "SELECT m FROM Movimentacao m WHERE m.conta.numeroConta = :numeroConta";
         return em.createQuery(jpql, Movimentacao.class).getResultList();
     }
 
