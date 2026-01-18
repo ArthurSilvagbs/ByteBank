@@ -1,15 +1,20 @@
 package controller;
 
-import dao.ContaDAOJPA;
 import dao.MovimentacaoDAOJPA;
 import jakarta.persistence.EntityManager;
+import model.Conta;
 import model.Movimentacao;
 import util.JPAUtil;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class MovimentacoController {
+
+
+
+
+
+
 
     public void criarMovimentacao(Movimentacao movimentacao) {
 
@@ -57,4 +62,6 @@ public class MovimentacoController {
         }
 
     }
+
+
 }

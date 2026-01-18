@@ -17,20 +17,40 @@ public class Movimentacao {
     private Conta contaOrigem;
 
     @ManyToOne
-    @JoinColumn(name = "conta_destino_id", nullable = false)
+    @JoinColumn(name = "conta_destino_id")
     private Conta contaDestino;
 
     @Column(scale = 2, precision = 11, nullable = false)
     private BigDecimal valor;
 
+    @Column(nullable = false)
+    private String tipoMovimentacao;
+
     public Movimentacao() {
     }
 
-    public Movimentacao(Long id, Conta contaOrigem, Conta contaDestino, BigDecimal valor) {
-        this.id = id;
+    public Movimentacao(Conta contaOrigem, Conta contaDestino, BigDecimal valor) {
         this.contaOrigem = contaOrigem;
         this.contaDestino = contaDestino;
         this.valor = valor;
+        this.tipoMovimentacao = "Transferência";
+
+        contaOrigem.getSaidas().add(this);
+        contaDestino.getEntradas().add(this);
+    }
+
+    public Movimentacao(Conta conta, BigDecimal valor, String tipo) {
+        this.valor = valor;
+        this.tipoMovimentacao = tipo;
+
+        if (tipo.equalsIgnoreCase("SAQUE")) {
+            this.contaOrigem = conta;
+            conta.getSaidas().add(this);
+        } else {
+            this.contaDestino = conta;
+            conta.getEntradas().add(this);
+        }
+
     }
 
     public Long getId() {
@@ -64,4 +84,13 @@ public class Movimentacao {
     public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
+
+    public String getTipoMovimentacao() {
+        return tipoMovimentacao;
+    }
+
+    public void setTipoMovimentacao(String tipoMovimentacao) {
+        this.tipoMovimentacao = tipoMovimentacao;
+    }
+
 }

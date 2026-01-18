@@ -54,4 +54,9 @@ public class Cliente {
         this.contas.add(conta);
         conta.setCliente(this);
     }
+
+    @Override
+    public String toString() {
+        return String.format("| CPF: %s | NOME: %s |", this.cpf, this.nome);
+    }
 }
