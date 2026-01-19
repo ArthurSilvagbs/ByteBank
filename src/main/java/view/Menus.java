@@ -2,10 +2,8 @@ package view;
 
 import controller.ClienteController;
 import controller.ContaController;
-import controller.MovimentacoController;
 import model.Cliente;
 import model.Conta;
-import model.Movimentacao;
 
 import java.math.BigDecimal;
 import java.util.InputMismatchException;

@@ -78,6 +78,37 @@ public class ContaController {
 
     public void realizarPix(Conta contaOrigem, Conta contaDestino, BigDecimal valorTransferencia) {
 
+        EntityManager em = JPAUtil.getEntityManager();
+        ContaDAOJPA contaDao = new ContaDAOJPA(em);
+        MovimentacaoDAOJPA movDao = new MovimentacaoDAOJPA(em);
+
+        try {
+            em.getTransaction().begin();
+
+            BigDecimal saldoAtualContaOrigem = contaOrigem.getSaldo();
+            contaOrigem.setSaldo(saldoAtualContaOrigem.subtract(valorTransferencia));
+
+            BigDecimal saldoAtualContaDestino = contaDestino.getSaldo();
+            contaDestino.setSaldo(saldoAtualContaDestino.add(valorTransferencia));
+
+            Movimentacao movimentacao = new Movimentacao(contaOrigem, contaDestino, valorTransferencia);
+
+            contaDao.atualizar(contaOrigem);
+            contaDao.atualizar(contaDestino);
+            movDao.inserir(movimentacao);
+
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw new RuntimeException(e);
+        } finally {
+            em.close();
+            contaDao.fechar();
+            movDao.fechar();
+        }
+
     }
 
     //==================================
