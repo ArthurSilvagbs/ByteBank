@@ -3,6 +3,8 @@ package model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Movimentacao {
@@ -26,6 +28,9 @@ public class Movimentacao {
     @Column(nullable = false)
     private String tipoMovimentacao;
 
+    @Column(nullable = false)
+    private LocalDateTime dataHora;
+
     public Movimentacao() {
     }
 
@@ -34,6 +39,7 @@ public class Movimentacao {
         this.contaDestino = contaDestino;
         this.valor = valor;
         this.tipoMovimentacao = "Transferência";
+        this.dataHora = LocalDateTime.now();
 
         contaOrigem.getSaidas().add(this);
         contaDestino.getEntradas().add(this);
@@ -42,6 +48,7 @@ public class Movimentacao {
     public Movimentacao(Conta conta, BigDecimal valor, String tipo) {
         this.valor = valor;
         this.tipoMovimentacao = tipo;
+        this.dataHora = LocalDateTime.now();
 
         if (tipo.equalsIgnoreCase("SAQUE")) {
             this.contaOrigem = conta;
@@ -93,4 +100,20 @@ public class Movimentacao {
         this.tipoMovimentacao = tipoMovimentacao;
     }
 
+    public String getDataFormatada() {
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return this.dataHora.format(formatador);
+    }
+
+    public String toString() {
+        if (this.tipoMovimentacao.equalsIgnoreCase("SAQUE") || this.tipoMovimentacao.equalsIgnoreCase("Deposito")) {
+            Long num = (contaOrigem != null) ? contaOrigem.getNumeroConta() : contaDestino.getNumeroConta();
+            return String.format("| ID: %d | CONTA: %d | DATA E HORA: %s | VALOR: R$ %.2f | TIPO: %s |",
+                    this.id, num, this.getDataFormatada(), this.valor, this.tipoMovimentacao);
+        } else {
+            return String.format("| ID: %d | CONTA ORIGEM: %d | CONTA DESTINO: %d | DATA E HORA: %s | VALOR: R$ %.2f | TIPO: %s |",
+                    this.id, this.contaOrigem.getNumeroConta(), this.contaDestino.getNumeroConta(),
+                    this.getDataFormatada(), this.valor, this.tipoMovimentacao);
+        }
+    }
 }

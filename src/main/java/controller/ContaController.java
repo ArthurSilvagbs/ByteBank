@@ -55,14 +55,20 @@ public class ContaController {
             em.getTransaction().begin();
 
             BigDecimal saldoAtual = conta.getSaldo();
-            conta.setSaldo(saldoAtual.subtract(valorSaque));
 
-            Movimentacao movimentacao = new Movimentacao(conta, valorSaque, "Saque");
+            if (saldoAtual.compareTo(valorSaque) >= 0) {
+                conta.setSaldo(saldoAtual.subtract(valorSaque));
 
-            contaDao.atualizar(conta);
-            movDao.inserir(movimentacao);
+                Movimentacao movimentacao = new Movimentacao(conta, valorSaque, "Saque");
 
-            em.getTransaction().commit();
+                contaDao.atualizar(conta);
+                movDao.inserir(movimentacao);
+
+                em.getTransaction().commit();
+            } else {
+                throw new RuntimeException("Saldo insuficiente!");
+            }
+
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
@@ -73,10 +79,9 @@ public class ContaController {
             contaDao.fechar();
             movDao.fechar();
         }
-
     }
 
-    public void realizarPix(Conta contaOrigem, Conta contaDestino, BigDecimal valorTransferencia) {
+    public void realizarTransferencia(Conta contaOrigem, Conta contaDestino, BigDecimal valorTransferencia) {
 
         EntityManager em = JPAUtil.getEntityManager();
         ContaDAOJPA contaDao = new ContaDAOJPA(em);
@@ -86,18 +91,27 @@ public class ContaController {
             em.getTransaction().begin();
 
             BigDecimal saldoAtualContaOrigem = contaOrigem.getSaldo();
-            contaOrigem.setSaldo(saldoAtualContaOrigem.subtract(valorTransferencia));
-
             BigDecimal saldoAtualContaDestino = contaDestino.getSaldo();
-            contaDestino.setSaldo(saldoAtualContaDestino.add(valorTransferencia));
 
-            Movimentacao movimentacao = new Movimentacao(contaOrigem, contaDestino, valorTransferencia);
+            if (valorTransferencia.compareTo(BigDecimal.ZERO) > 0 && saldoAtualContaOrigem.compareTo(valorTransferencia) >= 0) {
 
-            contaDao.atualizar(contaOrigem);
-            contaDao.atualizar(contaDestino);
-            movDao.inserir(movimentacao);
+                contaOrigem.setSaldo(saldoAtualContaOrigem.subtract(valorTransferencia));
+                contaDestino.setSaldo(saldoAtualContaDestino.add(valorTransferencia));
 
-            em.getTransaction().commit();
+                Movimentacao movimentacao = new Movimentacao(contaOrigem, contaDestino, valorTransferencia);
+
+                contaDao.atualizar(contaOrigem);
+                contaDao.atualizar(contaDestino);
+                movDao.inserir(movimentacao);
+
+                em.getTransaction().commit();
+            } else if (valorTransferencia.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new RuntimeException("O valor da transferência deve ser maior que zero!");
+            } else {
+                throw new RuntimeException("Saldo insuficiente!");
+            }
+
+
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
@@ -110,10 +124,6 @@ public class ContaController {
         }
 
     }
-
-    //==================================
-
-    //vincular conta ao cliente
 
     public void criarConta(Conta conta) {
 

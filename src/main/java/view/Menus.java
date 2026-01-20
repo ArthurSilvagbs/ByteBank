@@ -244,23 +244,91 @@ public class Menus {
                     break;
             }
 
-
         } while (ligado);
     }
 
     private static void exibirMenuPix() {
+        boolean ligado = true;
 
+        do {
+
+            System.out.print("Número da conta origem: ");
+            Long numeroContaOrigem = lerLong();
+
+            Conta contaOrigem = contaController.buscarContaPorNumero(numeroContaOrigem);
+
+            if (contaOrigem != null) {
+                System.out.println("Resultado da pesquisa:\n" + contaOrigem);
+            } else {
+                System.out.println("Conta não encontrada.");
+                continue;
+            }
+
+            int opcaoPesquisaOrigem = confirmacaoPesquisa();
+
+            switch (opcaoPesquisaOrigem) {
+
+                case 1:
+                    System.out.print("Número da conta destino: ");
+                    Long numeroContaDestino = lerLong();
+
+                    Conta contaDestino = contaController.buscarContaPorNumero(numeroContaDestino);
+
+                    if (contaDestino != null) {
+                        System.out.println("Resultado da pesquisa:\n" + contaDestino);
+                    } else {
+                        System.out.println("Conta não encontrada.");
+                        continue;
+                    }
+
+                    int opcaoPesquisaDestino = confirmacaoPesquisa();
+
+                    switch (opcaoPesquisaDestino) {
+
+                        case 1:
+                            try {
+                                System.out.print("Valor da transferência: R$ ");
+                                BigDecimal valorTransferencia = lerBigDecimal();
+
+                                contaController.realizarTransferencia(contaOrigem, contaDestino, valorTransferencia);
+
+                                System.out.println("Pix realizado com sucesso!");
+                                ligado = false;
+                            } catch (Exception e) {
+                                System.out.println("Erro: " + e.getMessage());
+                            }
+                            break;
+
+                        case 2:
+                            System.out.println("Tente novamente.");
+                            continue;
+
+                        default:
+                            System.out.println("Opção inválida");
+                            break;
+                    }
+
+                    break;
+
+                case 2:
+                    System.out.println("Voltando para o incio.");
+                    continue;
+
+                default:
+                    System.out.println("Opção inválida!");
+                    break;
+
+            }
+
+        } while (ligado);
 
     }
 
     private static void exibirMenuExtrato() {
 
 
+
     }
-
-
-
-
 
     private static int lerInteiro() {
 
