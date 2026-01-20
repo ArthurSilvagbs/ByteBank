@@ -9,7 +9,7 @@ public interface MovimentacaoDAO {
 
     void inserir(Movimentacao movimentacao);
     Movimentacao buscarPorId(Long id);
-    List<Movimentacao> obterTodos();
+    List<Movimentacao> obterTodos(Conta conta);
     void fechar();
 
 }

@@ -1,6 +1,7 @@
 package dao;
 
 import jakarta.persistence.EntityManager;
+import model.Conta;
 import model.Movimentacao;
 
 import java.util.List;
@@ -24,9 +25,12 @@ public class MovimentacaoDAOJPA implements MovimentacaoDAO{
     }
 
     @Override
-    public List<Movimentacao> obterTodos() {
-        String jpql = "SELECT m FROM Movimentacao m WHERE m.conta.numeroConta = :numeroConta";
-        return em.createQuery(jpql, Movimentacao.class).getResultList();
+    public List<Movimentacao> obterTodos(Conta conta) {
+        String jpql = "SELECT m FROM Movimentacao m WHERE m.contaOrigem = :conta OR m.contaDestino = :conta ORDER BY m.dataHora DESC";
+
+        return em.createQuery(jpql, Movimentacao.class)
+                .setParameter("conta", conta)
+                .getResultList();
     }
 
     @Override

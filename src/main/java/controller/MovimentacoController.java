@@ -10,12 +10,6 @@ import java.util.List;
 
 public class MovimentacoController {
 
-
-
-
-
-
-
     public void criarMovimentacao(Movimentacao movimentacao) {
 
         EntityManager em = JPAUtil.getEntityManager();
@@ -50,17 +44,17 @@ public class MovimentacoController {
 
     }
 
-    public List<Movimentacao> obterMovimentacaoPorConta() {
-
+    public List<Movimentacao> obterMovimentacaoPorConta(Conta conta) {
         EntityManager em = JPAUtil.getEntityManager();
         MovimentacaoDAOJPA dao = new MovimentacaoDAOJPA(em);
 
         try {
-            return dao.obterTodos();
+            List<Movimentacao> movimentacoes = dao.obterTodos(conta);
+            movimentacoes.size();
+            return movimentacoes;
         } finally {
-            dao.fechar();
+            em.close();
         }
-
     }
 
 

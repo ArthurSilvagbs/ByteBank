@@ -2,11 +2,14 @@ package view;
 
 import controller.ClienteController;
 import controller.ContaController;
+import controller.MovimentacoController;
 import model.Cliente;
 import model.Conta;
+import model.Movimentacao;
 
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menus {
@@ -14,6 +17,7 @@ public class Menus {
     private final static Scanner sc = new Scanner(System.in);
     private final static ClienteController clienteController = new ClienteController();
     private final static ContaController contaController = new ContaController();
+    private final static MovimentacoController movController = new MovimentacoController();
 
     public static void exibirMenuPrincipal() {
 
@@ -326,7 +330,24 @@ public class Menus {
 
     private static void exibirMenuExtrato() {
 
+        System.out.print("Digite o número da conta para o extrato: ");
+        Long numero = lerLong();
+        Conta conta = contaController.buscarContaPorNumero(numero);
 
+        if (conta != null) {
+            List<Movimentacao> extrato = movController.obterMovimentacaoPorConta(conta);
+
+            System.out.println("=== EXTRATO DA CONTA " + numero + " ===");
+            if (extrato.isEmpty()) {
+                System.out.println("Nenhuma movimentação encontrada para esta conta.");
+            } else {
+                for (Movimentacao m : extrato) {
+                    System.out.println(m);
+                }
+            }
+        } else {
+            System.out.println("Conta não encontrada.");
+        }
 
     }
 
@@ -369,27 +390,6 @@ public class Menus {
                 sc.nextLine();
             }
         }
-    }
-
-    private static String lerString() {
-        while (true) {
-            String entrada = sc.nextLine();
-            if (!entrada.trim().isEmpty()) {
-                return entrada;
-            }
-            System.out.print("Erro! O campo não pode ficar vazio. Digite novamente: ");
-        }
-    }
-
-    private static int repetirOperacao() {
-        System.out.println("""
-                    REPETIR OPERAÇÃO?
-                    
-                    [ 1 ] SIM
-                    [ 2 ] NÃO
-                    
-                    Selecione uma opção:\s""");
-        return lerInteiro();
     }
 
     private static int tentarNovamente() {

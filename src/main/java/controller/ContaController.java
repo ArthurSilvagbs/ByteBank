@@ -12,8 +12,6 @@ import java.util.List;
 
 public class ContaController {
 
-    private final static MovimentacoController movimentacaoController = new MovimentacoController();
-
     public void realizarDeposito(Conta conta, BigDecimal valorDeposito) {
 
         EntityManager em = JPAUtil.getEntityManager();
