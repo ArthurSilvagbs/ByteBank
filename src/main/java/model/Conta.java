@@ -3,6 +3,8 @@ package model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,17 +16,17 @@ public class Conta {
     private Long numeroConta;
 
     @Column(nullable = false, precision = 11, scale = 2)
-    private BigDecimal saldo;
+    private BigDecimal saldo = new BigDecimal(BigInteger.ZERO);
 
     @ManyToOne
     @JoinColumn(name = "cliente_cpf", nullable = false)
     private Cliente cliente;
 
     @OneToMany(mappedBy = "contaOrigem", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
-    private List<Movimentacao> entradas;
+    private List<Movimentacao> entradas = new ArrayList<>();
 
     @OneToMany(mappedBy = "contaDestino", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
-    private List<Movimentacao> saidas;
+    private List<Movimentacao> saidas = new ArrayList<>();
 
     public Conta() {
     }
@@ -71,5 +73,10 @@ public class Conta {
 
     public void setSaidas(List<Movimentacao> saidas) {
         this.saidas = saidas;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("| Nº CONTA: %d | CPF TITULAR: %s | SALDO: %.2f |",this.numeroConta, this.cliente.getCpf(), this.saldo);
     }
 }

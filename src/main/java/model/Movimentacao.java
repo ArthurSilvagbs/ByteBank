@@ -15,11 +15,11 @@ public class Movimentacao {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "conta_origem_id", nullable = false)
+    @JoinColumn(name = "conta_origem_id", nullable = true)
     private Conta contaOrigem;
 
     @ManyToOne
-    @JoinColumn(name = "conta_destino_id")
+    @JoinColumn(name = "conta_destino_id", nullable = true)
     private Conta contaDestino;
 
     @Column(scale = 2, precision = 11, nullable = false)
@@ -53,7 +53,7 @@ public class Movimentacao {
         if (tipo.equalsIgnoreCase("SAQUE")) {
             this.contaOrigem = conta;
             conta.getSaidas().add(this);
-        } else {
+        } else if (tipo.equalsIgnoreCase("DEPOSITO")){
             this.contaDestino = conta;
             conta.getEntradas().add(this);
         }

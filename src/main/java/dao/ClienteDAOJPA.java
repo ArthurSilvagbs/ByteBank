@@ -25,7 +25,14 @@ public record ClienteDAOJPA(EntityManager em) implements ClienteDAO {
 
     @Override
     public Cliente buscarPorCpf(String cpf) {
-        return em.find(Cliente.class, cpf);
+        try {
+            String jpql = "SELECT c FROM Cliente c LEFT JOIN FETCH c.contas WHERE c.cpf = :cpf";
+            return em.createQuery(jpql, Cliente.class)
+                    .setParameter("cpf", cpf)
+                    .getSingleResult();
+        } catch (jakarta.persistence.NoResultException e) {
+            return null;
+        }
     }
 
     @Override

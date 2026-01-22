@@ -6,7 +6,7 @@ import jakarta.persistence.Persistence;
 
 public class JPAUtil {
 
-    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("ByteBank");
+    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("bytebank");
 
     public static EntityManager getEntityManager() {
         return emf.createEntityManager();

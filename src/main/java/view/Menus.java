@@ -147,7 +147,9 @@ public class Menus {
                             System.out.print("Valor do deposito: R$ ");
                             BigDecimal valorDeposito = lerBigDecimal();
 
-                            contaController.realizarDeposito(conta, valorDeposito);
+                            contaController.realizarDeposito(conta.getNumeroConta(), valorDeposito);
+
+                            System.out.println("Depósito realizado com sucesso!");
 
                             ligado = false;
                         } catch (Exception e) {
@@ -214,7 +216,7 @@ public class Menus {
                             System.out.print("Valor do saque: R$ ");
                             BigDecimal valorSaque = lerBigDecimal();
 
-                            contaController.realizarSaque(conta, valorSaque);
+                            contaController.realizarSaque(numeroConta, valorSaque);
 
                             ligado = false;
                         } catch (Exception e) {
@@ -294,7 +296,7 @@ public class Menus {
                                 System.out.print("Valor da transferência: R$ ");
                                 BigDecimal valorTransferencia = lerBigDecimal();
 
-                                contaController.realizarTransferencia(contaOrigem, contaDestino, valorTransferencia);
+                                contaController.realizarTransferencia(numeroContaOrigem, numeroContaDestino, valorTransferencia);
 
                                 System.out.println("Pix realizado com sucesso!");
                                 ligado = false;

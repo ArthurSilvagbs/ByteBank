@@ -3,8 +3,10 @@ package controller;
 import dao.ContaDAOJPA;
 import dao.MovimentacaoDAOJPA;
 import jakarta.persistence.EntityManager;
+import model.Cliente;
 import model.Conta;
 import model.Movimentacao;
+import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import util.JPAUtil;
 
 import java.math.BigDecimal;
@@ -12,7 +14,7 @@ import java.util.List;
 
 public class ContaController {
 
-    public void realizarDeposito(Conta conta, BigDecimal valorDeposito) {
+    public void realizarDeposito(Long numeroConta, BigDecimal valorDeposito) {
 
         EntityManager em = JPAUtil.getEntityManager();
         ContaDAOJPA contaDao = new ContaDAOJPA(em);
@@ -21,12 +23,12 @@ public class ContaController {
         try {
             em.getTransaction().begin();
 
+            Conta conta = em.find(Conta.class, numeroConta);
             BigDecimal saldoAtual = conta.getSaldo();
             conta.setSaldo(saldoAtual.add(valorDeposito));
 
             Movimentacao movimentacao = new Movimentacao(conta, valorDeposito, "Deposito");
 
-            contaDao.atualizar(conta);
             movDao.inserir(movimentacao);
 
             em.getTransaction().commit();
@@ -38,12 +40,11 @@ public class ContaController {
         } finally {
             em.close();
             contaDao.fechar();
-            movDao.fechar();
         }
 
     }
 
-    public void realizarSaque(Conta conta, BigDecimal valorSaque) {
+    public void realizarSaque(Long numeroConta, BigDecimal valorSaque) {
 
         EntityManager em = JPAUtil.getEntityManager();
         ContaDAOJPA contaDao = new ContaDAOJPA(em);
@@ -52,6 +53,7 @@ public class ContaController {
         try {
             em.getTransaction().begin();
 
+            Conta conta = em.find(Conta.class, numeroConta);
             BigDecimal saldoAtual = conta.getSaldo();
 
             if (saldoAtual.compareTo(valorSaque) >= 0) {
@@ -59,7 +61,6 @@ public class ContaController {
 
                 Movimentacao movimentacao = new Movimentacao(conta, valorSaque, "Saque");
 
-                contaDao.atualizar(conta);
                 movDao.inserir(movimentacao);
 
                 em.getTransaction().commit();
@@ -79,7 +80,7 @@ public class ContaController {
         }
     }
 
-    public void realizarTransferencia(Conta contaOrigem, Conta contaDestino, BigDecimal valorTransferencia) {
+    public void realizarTransferencia(Long numeroContaOrigem, Long numeroContaDestino, BigDecimal valorTransferencia) {
 
         EntityManager em = JPAUtil.getEntityManager();
         ContaDAOJPA contaDao = new ContaDAOJPA(em);
@@ -87,6 +88,9 @@ public class ContaController {
 
         try {
             em.getTransaction().begin();
+
+            Conta contaOrigem = em.find(Conta.class, numeroContaOrigem);
+            Conta contaDestino = em.find(Conta.class, numeroContaDestino);
 
             BigDecimal saldoAtualContaOrigem = contaOrigem.getSaldo();
             BigDecimal saldoAtualContaDestino = contaDestino.getSaldo();
@@ -98,8 +102,6 @@ public class ContaController {
 
                 Movimentacao movimentacao = new Movimentacao(contaOrigem, contaDestino, valorTransferencia);
 
-                contaDao.atualizar(contaOrigem);
-                contaDao.atualizar(contaDestino);
                 movDao.inserir(movimentacao);
 
                 em.getTransaction().commit();
@@ -167,29 +169,6 @@ public class ContaController {
 
         EntityManager em = JPAUtil.getEntityManager();
         ContaDAOJPA dao = new ContaDAOJPA(em);
-
-        try {
-            em.getTransaction().begin();
-            dao.atualizar(conta);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            throw new RuntimeException(e);
-        } finally {
-            dao.fechar();
-        }
-
-    }
-
-    public void atualizarSaldo(BigDecimal saldo) {
-
-        EntityManager em = JPAUtil.getEntityManager();
-        ContaDAOJPA dao = new ContaDAOJPA(em);
-        Conta conta = new Conta();
-
-        conta.setSaldo(saldo);
 
         try {
             em.getTransaction().begin();

@@ -35,7 +35,7 @@ public class ContaDAOJPA implements ContaDAO{
 
     @Override
     public List<Conta> obterTodos() {
-        String jpql = "SELECT c FROM Cliente c";
+        String jpql = "String jpql = \"SELECT c FROM Cliente c JOIN FETCH c.contas WHERE c.id = :id\";";
         return em.createQuery(jpql, Conta.class).getResultList();
     }
 
